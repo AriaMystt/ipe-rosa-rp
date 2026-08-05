@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 // 2. CHANGED: Added "splat" name to wildcard to prevent path-to-regexp v8 crash
 app.get('/{*splat}', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(PORT, () => {
