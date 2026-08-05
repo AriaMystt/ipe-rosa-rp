@@ -76,7 +76,7 @@ function Home() {
         <h2 className="text-4xl font-title font-bold text-primary mb-8">
           Participe do Ipê Rosa
         </h2>
-        <a href="/participar" className="px-6 py-3 bg-primary text-white font-body font-bold rounded-2xl hover:bg-accent hover:shadow-xl hover:scale-105 transition-all duration-300 ease-out mt-8">
+        <a href="/entrar" className="px-6 py-3 bg-primary text-white font-body font-bold rounded-2xl hover:bg-accent hover:shadow-xl hover:scale-105 transition-all duration-300 ease-out mt-8">
           Clique aqui para participar
         </a>
       </div>
