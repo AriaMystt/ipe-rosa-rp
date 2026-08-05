@@ -18,6 +18,6 @@ app.get('*', (req, res) => {
 });
 
 // Bind server to Discloud required host and port
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Server is running successfully on port ${PORT}`);
 });
