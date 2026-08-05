@@ -59,7 +59,7 @@ function Home() {
               • Foco em Socialização: Você tem total liberdade fora das salas para interagir.<br/>
               • Intervalos Longos: Os intervalos entre as aulas demoram bastante para o pessoal conversar.<br/>
               • Dramas: Você pode criar amizades, rivalidades, romances, e até mesmo tramas de bullying.<br/>
-              • Clubes: O servidor é livre para a criação de clubes de diferentes interesses! Você pode ter ou participar do clube que desejar.
+              • Clubes: O servidor é livre para a criação de clubes de diferentes interesses! Você pode ter ou participar do clube que desejar.<br/>
               • Liberdade: Você pode criar seu próprio personagem, com sua própria história, e viver sua própria vida dentro do servidor!<br/>
             </p>
           </div>
