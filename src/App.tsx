@@ -1,12 +1,12 @@
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/header';
 import Footer from './components/footer';
-import Home from './pages/home';
-import Lore from './pages/lore';
+import Home from './pages/home'
+import Lore from './pages/lore'
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div className="bg-background min-h-screen font-body">
         <Header />
         <Routes>
@@ -15,7 +15,7 @@ function App() {
         </Routes>
         <Footer />
       </div>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
 
