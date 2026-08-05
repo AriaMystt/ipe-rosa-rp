@@ -10,10 +10,19 @@
     "preview": "vite preview",
     "start": "node index.js"
   },
+  "server": {
+    "proxy": {
+      "/auth": "http://localhost:8080",
+      "/api": "http://localhost:8080"
+    }
+  },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "js-cookie": "^3.0.8",
+    "jsonwebtoken": "^9.0.3",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.11.0",
