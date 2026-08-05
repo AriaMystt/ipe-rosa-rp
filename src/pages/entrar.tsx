@@ -1,28 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
-interface DiscordUser {
-    id: string;
-    username: string;
-    avatar: string | null;
-    avatarUrl: string;
-}
-
-function Participar() {
-    const [user, setUser] = useState<DiscordUser | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetch('/api/me', { credentials: 'include' })
-            .then((res) => res.json())
-            .then((data: { user: DiscordUser | null }) => setUser(data.user))
-            .catch(() => setUser(null))
-            .finally(() => setLoading(false));
-    }, []);
-
-    const handleLogout = async () => {
-        await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
-        setUser(null);
-    };
+function Entrar() {
+    const { user, loading, logout } = useAuth();
 
     return (
         <div>
@@ -38,7 +17,7 @@ function Participar() {
                         />
                         <p className="font-body font-bold">{user.username}</p>
                         <button
-                            onClick={handleLogout}
+                            onClick={logout}
                             className="px-6 py-3 bg-primary text-white font-body font-bold rounded-2xl hover:bg-accent hover:shadow-xl hover:scale-105 transition-all duration-300 ease-out"
                         >
                             Sair
@@ -57,4 +36,4 @@ function Participar() {
     );
 };
 
-export default Participar;
+export default Entrar;

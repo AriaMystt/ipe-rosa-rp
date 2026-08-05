@@ -77,7 +77,7 @@ app.get('/auth/discord/callback', async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.redirect('/');
+    res.redirect('/entrar');
   } catch (err) {
     console.error('Discord OAuth error:', err);
     res.redirect('/?login=error');
