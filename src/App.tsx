@@ -3,6 +3,7 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Home from './pages/home'
 import Lore from './pages/lore'
+import Participar from './pages/participar'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/lore" element={<Lore />} />
+          <Route path="/participar" element={<Participar />} />
         </Routes>
         <Footer />
       </div>
