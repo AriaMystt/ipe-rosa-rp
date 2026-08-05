@@ -20,8 +20,8 @@ function Home() {
           </a>
         </div>
 
-        <div className="flex flex-col items-center justify-end h-full text-secondary text-center font-title font-bold mt-48 md:mt-32 max-h-1/6">
-          <p className="text-lg font-body text-primary text-center mt-4">
+        <div className="flex flex-col items-center justify-end h-full text-secondary text-center font-title font-bold mt-auto mb-16 md:mb-0 max-h-1/6">
+          <p className="text-lg font-body text-primary text-center">
             Mais
           </p>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
