@@ -4,6 +4,7 @@ import Footer from './components/footer';
 import Home from './pages/home'
 import Lore from './pages/lore'
 import Entrar from './pages/entrar'
+import Perfil from './pages/perfil'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/lore" element={<Lore />} />
           <Route path="/entrar" element={<Entrar />} />
+          <Route path="/perfil" element={<Perfil />} />
         </Routes>
         <Footer />
       </div>

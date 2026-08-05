@@ -2,22 +2,20 @@ import { useAuth } from '../hooks/useAuth';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Entrar() {
+function Perfil() {
     const { user, loading, logout } = useAuth();
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!loading && user) {
-            navigate('/perfil', { replace: true });
+        if (!loading && !user) {
+            navigate('/entrar', { replace: true });
         }
     }, [user, loading, navigate]);
 
     return (
         <div>
             <div className="flex flex-col items-center justify-between mx-auto pb-24">
-                {loading ? (
-                    <div className="mt-8">Carregando...</div>
-                ) : user ? (
+                {user ? (
                     <div className="flex flex-col items-center gap-4 mt-8">
                         <img
                             src={user.avatarUrl}
@@ -45,4 +43,4 @@ function Entrar() {
     );
 };
 
-export default Entrar;
+export default Perfil;
