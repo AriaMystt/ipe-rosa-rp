@@ -3,21 +3,19 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = 8080; 
 
-// Replicate __dirname functionality for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve the static files from the Vite build directory
+// 1. Serve compiled production assets
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Send all requests to index.html so React/Vue SPA routing works
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// 2. CHANGED: Added "splat" name to wildcard to prevent path-to-regexp v8 crash
+app.get('/{*splat}', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Bind server to Discloud required host and port
 app.listen(PORT, () => {
-  console.log(`Server is running successfully on port ${PORT}`);
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
