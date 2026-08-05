@@ -6,17 +6,17 @@ function Home() {
           <h1 className="text-4xl md:text-8xl">
             Bem-vindo ao Ipê Rosa
           </h1>
-          <p className="text-2xl md:text-xl font-body text-secondary text-center mt-4">
+          <p className="text-lg md:text-xl font-body text-secondary text-center mt-4">
             Um servidor de roleplay dedicado a criar experiências imersivas e envolventes no universo de Gakuran, Roblox.
           </p>
         </div>
         
         <div className="flex flex-col items-center justify-between m-auto p-12 h-full bg-gray-800/50 backdrop-blur-xl rounded-xl shadow-xl shadow-black/40">
-          <h1 className="text-xl text-primary text-center font-title font-bold">
+          <h1 className="text-xl md:text-2xl text-primary text-center font-title font-bold">
             Nossa comunidade e roleplay se passam inteiramente no discord!
           </h1>
           <a href="https://discord.gg/f3CrsJuvCw" target="_blank" className="px-6 py-3 text-md bg-primary text-white font-body font-bold rounded-2xl hover:bg-accent hover:shadow-xl hover:scale-105 transition-all duration-300 ease-out mt-8">
-            Junte-se ao discord
+            Se junte-se ao discord
           </a>
         </div>
 
