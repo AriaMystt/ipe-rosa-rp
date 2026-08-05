@@ -20,7 +20,7 @@ function Home() {
           </a>
         </div>
 
-        <div className="flex flex-col items-center justify-end h-full text-secondary text-center font-title font-bold mt-32 max-h-1/6">
+        <div className="flex flex-col items-center justify-end h-full text-secondary text-center font-title font-bold mt-48 md:mt-32 max-h-1/6">
           <p className="text-lg font-body text-primary text-center mt-4">
             Mais
           </p>
