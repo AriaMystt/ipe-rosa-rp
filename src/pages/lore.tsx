@@ -1,6 +1,6 @@
 function Home() {
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-screen py-12 px-48">
+    <div className="flex flex-col items-center justify-center w-full min-h-screen py-12 px-8 md:px-48">
         <a href="/" className="text-secondary text-lg font-title hover:text-accent transition-colors text-left min-w-full">
             ← Voltar
         </a>
