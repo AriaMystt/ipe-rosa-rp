@@ -3,20 +3,20 @@ function Home() {
     <div>
       <div className="flex flex-col items-center justify-between mx-auto pb-24 bg-[url('/src/assets/images/hero.png')] bg-cover bg-center min-w-screen min-h-screen bg-no-repeat">
         <div className="flex flex-col items-center justify-center h-full text-primary text-center font-title font-bold mt-32 text-shadow-md text-shadow-black/40">
-          <h1 className="text-8xl">
+          <h1 className="text-4xl md:text-8xl">
             Bem-vindo ao Ipê Rosa
           </h1>
-          <p className="text-xl font-body text-secondary text-center mt-4">
+          <p className="text-2xl md:text-xl font-body text-secondary text-center mt-4">
             Um servidor de roleplay dedicado a criar experiências imersivas e envolventes no universo de Gakuran, Roblox.
           </p>
         </div>
         
-        <div className="flex flex-col items-center justify-between m-auto p-12 max-w-1/4 h-full bg-gray-800/50 backdrop-blur-xl rounded-xl shadow-xl shadow-black/40">
-          <h1 className="text-2xl text-primary text-center font-title font-bold">
-            Nossa comunidade e roleplay se passam inteiramente no discord
+        <div className="flex flex-col items-center justify-between m-auto p-12 h-full bg-gray-800/50 backdrop-blur-xl rounded-xl shadow-xl shadow-black/40">
+          <h1 className="text-xl text-primary text-center font-title font-bold">
+            Nossa comunidade e roleplay se passam inteiramente no discord!
           </h1>
           <a href="https://discord.gg/f3CrsJuvCw" target="_blank" className="px-6 py-3 text-md bg-primary text-white font-body font-bold rounded-2xl hover:bg-accent hover:shadow-xl hover:scale-105 transition-all duration-300 ease-out mt-8">
-            Se junte-se ao discord
+            Junte-se ao discord
           </a>
         </div>
 
