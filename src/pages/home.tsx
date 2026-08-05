@@ -34,6 +34,9 @@ function Home() {
               O jogo funciona como um ponto de encontro virtual onde os jogadores dão vida a estudantes de uma escola japonesa clássica.
               Não existem missões obrigatórias ou objetivos prontos: toda a história, as rivalidades e os acontecimentos são criados e decididos inteiramente pelos próprios jogadores através da atuação (Roleplay).
             </p>
+            <a href="https://www.roblox.com/games/128736949265057/Gakuran" className="mb-4 text-lg font-body text-blue-400 no-underline hover:underline">
+              Jogue Gakuran
+            </a>
           </div>
           <div className="text-left max-w-2xl min-h-max mb-8 rounded-2xl p-6 bg-black/40 backdrop-blur shadow-lg shadow-black/60 hover:shadow-xl hover:-translate-y-1 hover:scale-102 transition-all duration-300 ease-out">
             <h1 className="text-2xl font-title font-bold text-primary mb-4">
