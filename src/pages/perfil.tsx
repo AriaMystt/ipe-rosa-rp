@@ -109,9 +109,8 @@ function Perfil() {
                                         to="/ficha"
                                         className="text-center px-16 py-3 mt-16 bg-primary text-white font-body font-bold rounded-2xl hover:bg-accent hover:shadow-xl hover:scale-102 transition-all duration-300 ease-out"
                                     >
-                                        Refazer Ficha
+                                        Editar ficha
                                     </Link>
-                                    <p className="text-md md:text-lg font-body text-secondary m-0">Vai ter que refazer, estou fazendo a edição ainda</p>
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center gap-4 mt-8">
