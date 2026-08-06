@@ -33,6 +33,7 @@ function Ficha() {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Success:', result);
+                navigate('/perfil', { replace: true })
             } else {
                 console.error('Server error:', response.statusText);
             }
