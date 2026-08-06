@@ -19,7 +19,6 @@ function Ficha() {
     });
 
     const onSubmit = async (data: any) => {
-        console.log(data)
         if (!user || !isValid) return;
 
         try {
@@ -120,7 +119,11 @@ function Ficha() {
                 </div>
             </form>
 
-            <button type="submit" form="ficha" disabled={!user || !isValid} className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-primary text-white font-body font-bold rounded-2xl enabled:hover:bg-accent enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out mt-8">
+            <button 
+                type="submit" 
+                form="ficha" 
+                disabled={!user || !isValid} 
+                className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-primary text-white font-body font-bold rounded-2xl enabled:hover:bg-accent enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out mt-8">
                 {user ? (
                     isValid ? "Enviar Ficha" : "Preencha todos os campos antes de enviar"
                 ) : "Entre para enviar ficha"

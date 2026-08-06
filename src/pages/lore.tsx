@@ -2,7 +2,7 @@ function Home() {
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen py-8 px-4 md:px-48">
         <a href="/" className="text-secondary text-md md:text-lg font-title hover:text-accent transition-colors text-left min-w-full">
-            ← Voltar
+            ← Voltar/Cancelar
         </a>
         <div className="flex flex-col items-center justify-center w-full min-h-screen bg-stone-100 px-4 py-6 md:px-12 md:py-18 shadow-xl shadow-black bg-[url('/src/assets/images/paperTexture2.jpg')] bg-auto bg-center bg-repeat">
             <h1 className="text-3xl md:text-6xl font-title font-bold text-background mb-4 md:mb-8">

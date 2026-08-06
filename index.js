@@ -134,6 +134,17 @@ app.post('/api/submit', async (req, res) => {
   }
 });
 
+app.get('/api/ficha/:userId', (req, res) => {
+  const { userId } = req.params
+  const stmt = db.prepare('SELECT * FROM fichas WHERE userId = ?');
+  const ficha = stmt.get(userId)
+  if (!ficha) {
+    return res.status(404).json({ erro: 'Ficha não encontrada' });
+  }
+
+  res.json(ficha)
+});
+
 // --- Static frontend ---
 app.use(express.static(path.join(__dirname, 'dist')));
 
