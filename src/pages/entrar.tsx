@@ -10,6 +10,9 @@ function Entrar() {
         if (!loading && user) {
             navigate('/perfil', { replace: true });
         }
+        if (!loading && !user) {
+            navigate('/auth/discord', { replace: true });
+        }
     }, [user, loading, navigate]);
 
     return (

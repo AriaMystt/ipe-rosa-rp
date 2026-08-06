@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 
+import db from './database.js';
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -102,6 +104,34 @@ app.get('/api/me', (req, res) => {
 app.post('/auth/logout', (req, res) => {
   res.clearCookie('session');
   res.json({ ok: true });
+});
+
+app.post('/api/submit', async (req, res) => {
+  const token = req.cookies.session;
+  if (!token) return res.status(401).json({ user: null });
+
+  try {
+    const user = jwt.verify(token, JWT_SECRET)
+    const userId = user.id
+
+    const { charName, age, ethnicity, year, connections, lore, type, personality } = req.body;
+
+    const insert = db.prepare(
+      'INSERT OR REPLACE INTO fichas (userId, charName, age, ethnicity, year, connections, lore, type, personality) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    );
+
+    const result = insert.run(userId, charName, age, ethnicity, year, connections, lore, type, personality);
+
+    res.json({ 
+      success: true,
+      fichaId: result.lastInsertRowid,
+      character: charName,
+      message: 'Ficha salva com sucesso!'
+    });
+  } catch (error) {
+    console.error("Erro ao salvar ficha:", error);
+    res.status(500).json({ error: 'Erro interno no banco de dados.' });
+  }
 });
 
 // --- Static frontend ---

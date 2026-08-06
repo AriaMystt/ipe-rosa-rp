@@ -5,6 +5,7 @@ import Home from './pages/home'
 import Lore from './pages/lore'
 import Entrar from './pages/entrar'
 import Perfil from './pages/perfil'
+import Ficha from './pages/ficha'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/lore" element={<Lore />} />
           <Route path="/entrar" element={<Entrar />} />
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/ficha" element={<Ficha />} />
         </Routes>
         <Footer />
       </div>
