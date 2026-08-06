@@ -115,7 +115,7 @@ function Perfil() {
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center gap-4 mt-8">
-                                    <p className="text-md md:text-lg font-body w-full text-left text-black mb-4 md:mb-8">
+                                    <p className="text-xl md:text-2xl text-primary text-center font-title font-bold">
                                         Você ainda não possui uma ficha, que tal fazer uma?
                                     </p>
                                     <Link
