@@ -21,7 +21,7 @@ function Entrar() {
 
     const [fichas, setFichas] = useState<Ficha[] | null>(null);
     const [fetchingFichas, setFetchingFichas] = useState<boolean>(true);
-    const [discordUser, setDiscordUser] = useState<DiscordUser | null>(null);
+    const [discordUsers, setDiscordUsers] = useState<Record<string, DiscordUser | null>>({});
 
     const navigate = useNavigate();
 
@@ -47,24 +47,38 @@ function Entrar() {
             }
         };
 
-        const fetchDiscordUser = async () => {
-            if (!user?.id) return;
-            try {
-                const res = await fetch(`/api/discord-user/${user.id}`);
-                if (!res.ok) throw new Error('Failed to fetch');
-                const data = await res.json();
-                setDiscordUser(data);
-            } catch (error) {
-                console.error('Network error:', error);
-                setDiscordUser(null); // Keep as null instead of setting to false
-            }
-        };
-
         if (user) {
             fetchFichasData();
-            fetchDiscordUser();
         }
     }, [user, loading, navigate]);
+
+    useEffect(() => {
+        const fetchDiscordUsers = async () => {
+            if (!fichas?.length) return;
+
+            const entries = await Promise.all(
+                fichas.map(async (ficha) => {
+                    try {
+                        const res = await fetch(`/api/discord-user/${ficha.userId}`);
+                        if (!res.ok) throw new Error('Failed to fetch');
+                        const data = await res.json();
+                        return [ficha.userId, data as DiscordUser] as const;
+                    } catch (error) {
+                        console.error('Network error:', error);
+                        return [ficha.userId, null] as const;
+                    }
+                })
+            );
+
+            setDiscordUsers(Object.fromEntries(entries));
+        };
+
+        fetchDiscordUsers();
+    }, [fichas]);
+
+    const getDiscordUser = (userId: string) => {
+        return discordUsers[userId] ?? null;
+    };
 
     if (loading || fetchingFichas) {
         return <div className="text-center mt-12 text-primary font-bold">Carregando...</div>;
@@ -78,7 +92,7 @@ function Entrar() {
                         // Added key attribute and conditional optional chaining check
                         <button onClick={() => goToFicha(ficha.userId)} key={ficha.id} className="flex flex-col items-center justify-between bg-black/50 backdrop-blur-xl rounded-xl shadow-xl shadow-black/40 p-12 my-2 hover:bg-black/70 hover:scale-105 hover:shadow-2xl transition-all duration-300">
                             <h1 className="text-primary font-bold font-title text-lg">
-                                {discordUser?.globalName || "..."} (@{discordUser?.username || "..."})
+                                {getDiscordUser(ficha.userId)?.globalName || "..."} (@{getDiscordUser(ficha.userId)?.username || "..."})
                             </h1>
                             <p className="text-secondary font-bold font-title text-md">
                                 {ficha.charName}, {ficha.age} anos, {ficha.year}º ano.
