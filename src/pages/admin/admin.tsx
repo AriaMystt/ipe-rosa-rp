@@ -86,7 +86,7 @@ function Entrar() {
 
     return (
         <div>
-            <div className="grid grid-rows-1 md:grid-rows-3 items-center justify-center mx-auto my-24 bg-background">
+            <div className="flex flex-row flex-wrap justify-center items-center gap-6 mx-auto my-24 bg-background px-4">
                 {fichas && fichas.length > 0 ? (
                     fichas.map((ficha: Ficha) => (
                         // Added key attribute and conditional optional chaining check
