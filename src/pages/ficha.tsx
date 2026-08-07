@@ -96,28 +96,28 @@ function Ficha() {
                     <h1 className='text-2xl font-title text-primary font-bold'>
                         Qual o nome do seu personagem?
                     </h1>
-                    <textarea {...register("charName", {required: true})} id="charName" rows={1} placeholder="Bob Uzumaki" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-1/4' />
+                    <textarea {...register("charName", {required: true})} id="charName" rows={1} placeholder="Bob Uzumaki" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-full' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
                         Qual a idade do seu personagem?
                     </h1>
-                    <textarea {...register("age", {required: true})} id="age" rows={1} placeholder="18" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-1/4' />
+                    <textarea {...register("age", {required: true})} id="age" rows={1} placeholder="18" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-full' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
                         Qual a etinia do seu personagem? (Caso altere durante o rp, por favor avise)
                     </h1>
-                    <textarea {...register("ethnicity", {required: true})} id="ethnicity" rows={1} placeholder="Japones" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-1/4' />
+                    <textarea {...register("ethnicity", {required: true})} id="ethnicity" rows={1} placeholder="Japones" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-full' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
                         Qual ano escolar você deseja?
                     </h1>
-                    <select {...register("year", {required: true})} id="year" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-1/4'>
+                    <select {...register("year", {required: true})} id="year" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-full'>
                         <option value="1">1º</option>
                         <option value="2">2º</option>
                         <option value="3">3º</option>
@@ -134,7 +134,7 @@ function Ficha() {
                     <h1 className='text-2xl font-title text-primary font-bold'>
                         Você possuí algum relacionamento com alguem que participa ou quer participar do rp? Se sim, explique na sua historia sua relação com ele.
                     </h1>
-                    <textarea {...register("connections", {required: true})} id="connections" rows={1} placeholder="Sim, Robert Uzumaki" className='bg-white rounded-2xl font-body text-center font-medium my-4 px-8 py-2 w-1/4' />
+                    <textarea {...register("connections", {required: true})} id="connections" rows={1} placeholder="Sim, Robert Uzumaki" className='bg-white rounded-2xl font-body text-center font-medium my-4 px-8 py-2 w-full' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
