@@ -97,6 +97,13 @@ function Entrar() {
                             <p className="text-secondary font-bold font-title text-md">
                                 {ficha.charName}, {ficha.age} anos, {ficha.year}º ano.
                             </p>
+                            <div className="flex flex-row items-center justify-center w-full">
+                                <div className="w-2 h-2 bg-yellow-300 rounded-full flex items-center justify-center shadow-lg shadow-black" />
+
+                                <h1 className="text-md font-title font-bold text-yellow-300 text-shadow-lg text-shadow-black/50 m-2">
+                                    Status: Em espera
+                                </h1>
+                            </div>
                         </button>
                     ))
                 ) : (
