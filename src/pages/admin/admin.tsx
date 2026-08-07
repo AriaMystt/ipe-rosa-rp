@@ -90,7 +90,7 @@ function Entrar() {
                 {fichas && fichas.length > 0 ? (
                     fichas.map((ficha: Ficha) => (
                         // Added key attribute and conditional optional chaining check
-                        <button onClick={() => goToFicha(ficha.userId)} key={ficha.id} className="flex flex-col items-center justify-between bg-black/50 backdrop-blur-xl rounded-xl shadow-xl shadow-black/40 p-12 my-2 hover:bg-black/70 hover:scale-105 hover:shadow-2xl transition-all duration-300">
+                        <button onClick={() => goToFicha(ficha.userId)} key={ficha.id} className="flex flex-col items-center justify-between bg-black/50 backdrop-blur-xl rounded-xl shadow-xl shadow-black/40 p-12 my-2 hover:bg-black/70 hover:scale-105 hover:shadow-2xl transition-all duration-300 max-w-sm">
                             <h1 className="text-primary font-bold font-title text-lg">
                                 {getDiscordUser(ficha.userId)?.globalName || "..."} (@{getDiscordUser(ficha.userId)?.username || "..."})
                             </h1>
