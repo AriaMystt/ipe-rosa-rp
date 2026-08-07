@@ -1,16 +1,25 @@
-import { useAuth } from '../hooks/useAuth';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-function Ficha() {
-    const { user, loading } = useAuth();
+type RouteParams = {
+  id: string;
+};
+
+interface DiscordUser {
+    username: string;
+    globalName?: string;
+}
+
+function Perfil() {
     const navigate = useNavigate();
+    const { id } = useParams<RouteParams>();
 
-    const [ficha, setFicha] = useState<any>(null);
+    const [ficha, setFicha] = useState<any | null>(null);
     const [fetchingFicha, setFetchingFicha] = useState<boolean>(true);
+    const [discordUser, setDiscordUser] = useState<DiscordUser | null>(null);
 
-    // Pass `ficha` to `values` to auto-prefill fields when data arrives
     const { register, handleSubmit, formState: { isValid } } = useForm({
         mode: 'onChange',
         values: ficha,
@@ -20,20 +29,15 @@ function Ficha() {
     });
 
     useEffect(() => {
-        // Redirect if not logged in
-        if (!loading && !user) {
-            navigate('/entrar', { replace: true });
-            return;
-        }
-
         const fetchFichaData = async () => {
-            if (!user?.id) return;
+            if (!id) return;
 
             try {
-                const response = await fetch(`/api/ficha/${user.id}`);
+                const response = await fetch(`/api/ficha/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     setFicha(data);
+                    console.log(data)
                 } else {
                     console.error('Server error:', response.statusText);
                 }
@@ -44,17 +48,28 @@ function Ficha() {
             }
         };
 
-        if (user) {
-            fetchFichaData();
-        }
-    }, [user, loading, navigate]);
+        const fetchDiscordUser = async () => {
+            if (!id) return;
 
-    if (loading || fetchingFicha) {
-        return <div className="text-center mt-12 text-primary font-bold">Carregando...</div>;
-    }
+            try {
+                const res = await fetch(`/api/discord-user/${id}`);
+                if (!res.ok) throw new Error('Failed to fetch');
+                const data = await res.json();
+                setDiscordUser(data);
+            } catch (error) {
+                console.error('Network error:', error);
+                setDiscordUser(null); // Keep as null instead of setting to false
+            }
+        };
+
+        if (id) {
+            fetchFichaData();
+            fetchDiscordUser();
+        }
+    }, [id]);
 
     const onSubmit = async (data: any) => {
-        if (!user || !isValid) return;
+        if (!id || !isValid) return;
 
         try {
             const response = await fetch(`/api/submit`, {
@@ -68,7 +83,7 @@ function Ficha() {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Success:', result);
-                navigate('/perfil', { replace: true });
+                navigate('/admin', { replace: true });
             } else {
                 console.error('Server error:', response.statusText);
             }
@@ -77,47 +92,44 @@ function Ficha() {
         }
     };
 
+    if (fetchingFicha) {
+        return <div className="text-center mt-12 text-primary font-bold">Carregando...</div>;
+    }
+
     return (
-        <div className="flex flex-col items-center justify-center w-full min-h-screen py-8 px-4 md:px-48">
-            <a href="/" className="text-secondary text-md md:text-lg font-title hover:text-accent transition-colors text-left min-w-full">
+         <div className="flex flex-col items-center justify-center w-full min-h-screen py-8 px-4 md:px-48">
+            <a href="/admin" className="text-secondary text-md md:text-lg font-title hover:text-accent transition-colors text-left min-w-full">
                 ← Voltar/Cancelar
             </a>
+
             <h1 className="text-3xl md:text-6xl font-title font-bold text-primary">
-                Faça sua ficha
+                Ficha de {discordUser?.globalName || "..."} (@{discordUser?.username || "..."})
             </h1>
-            <div className="w-full">
-                <hr className="my-12 h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10" /> 
-            </div>
-
-            <form id="ficha" onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 items-center justify-center w-full min-h-screen px-4 py-2 md:px-12">
-                <h2 className="text-xl md:text-4xl font-title font-bold text-secondary text-center">
-                    Informações do seu personagem
-                </h2>
-
+            <form id="ficha" onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center justify-center w-full min-h-screen py-8 px-4 md:px-48">
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
-                        Qual o nome do seu personagem?
+                        Nome do personagem
                     </h1>
                     <textarea {...register("charName", {required: true})} id="charName" rows={1} placeholder="Bob Uzumaki" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-1/4' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
-                        Qual a idade do seu personagem?
+                        Idade do personagem
                     </h1>
                     <textarea {...register("age", {required: true})} id="age" rows={1} placeholder="18" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-1/4' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
-                        Qual a etinia do seu personagem? (Caso altere durante o rp, por favor avise)
+                        Etinia
                     </h1>
                     <textarea {...register("ethnicity", {required: true})} id="ethnicity" rows={1} placeholder="Japones" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-1/4' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
-                        Qual ano escolar você deseja?
+                        Ano escolar
                     </h1>
                     <select {...register("year", {required: true})} id="year" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-1/4'>
                         <option value="1">1º</option>
@@ -128,34 +140,30 @@ function Ficha() {
 
                 <hr className="my-12 h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10" />
 
-                <h2 className="text-xl md:text-4xl font-title font-bold text-secondary text-center">
-                    Sua lore
-                </h2>
-
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
-                        Você possuí algum relacionamento com alguem que participa ou quer participar do rp? Se sim, explique na sua historia sua relação com ele.
+                        Relacionamento
                     </h1>
                     <textarea {...register("connections", {required: true})} id="connections" rows={1} placeholder="Sim, Robert Uzumaki" className='bg-white rounded-2xl font-body text-center font-medium my-4 px-8 py-2 w-1/4' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
-                        História: Descreva o passado do seu personagem.
+                        História
                     </h1>
                     <textarea {...register("lore", {required: true})} id="lore" rows={8} placeholder="Bob Uzumaki é..." className='block bg-white rounded-2xl font-body text-left font-medium my-4 p-2 min-w-full' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
-                        Sua função na escola: De acordo com sua história, que tipo de aluno você é? Por que?
+                        Função na escola
                     </h1>
                     <textarea {...register("type", {required: true})} id="type" rows={8} placeholder="Bob Uzumaki é Encrenqueiro..." className='bg-white rounded-2xl font-body text-left font-medium my-4 p-2 min-w-full' />
                 </div>
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
-                        Personalidade: Em um paragrafo diga no minimo 4 qualidade e 4 defeitos do seu personagem...
+                        Personalidade
                     </h1>
                     <textarea {...register("personality", {required: true})} id="personality" rows={8} placeholder="Bob Uzumaki é bastante sociavel..." className='bg-white rounded-2xl font-body text-left font-medium my-4 p-2 min-w-full' />
                 </div>
@@ -164,14 +172,44 @@ function Ficha() {
             <button 
                 type="submit" 
                 form="ficha" 
-                disabled={!user || !isValid} 
-                className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-primary text-white font-body font-bold rounded-2xl enabled:hover:bg-accent enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out mt-8">
-                {user ? (
-                    isValid ? "Enviar Ficha" : "Preencha todos os campos antes de enviar"
+                disabled={!id || !isValid} 
+                className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-primary text-white font-body font-bold rounded-2xl enabled:hover:bg-accent enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out m-auto">
+                {id ? (
+                    isValid ? "Atualizar Ficha" : "Preencha todos os campos antes de enviar"
                 ) : "Entre para enviar ficha"}
             </button>
+
+            <hr className="my-12 h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10" />
+            
+            <div className="flex flex-row items-center justify-center w-screen">
+                <div className="w-2 h-2 bg-yellow-300 rounded-full flex items-center justify-center shadow-lg shadow-black" />
+
+                <h1 className="text-3xl md:text-2xl font-title font-bold text-yellow-300 backdrop-blur-2xl text-shadow-lg text-shadow-black/50 m-4">
+                    Status: Em espera
+                </h1>
+            </div>
+
+            <div className="flex flex-row items-center justify-center w-full gap-8">
+                <button 
+                    disabled={!id || !isValid} 
+                    className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-green-600 text-white font-body font-bold rounded-2xl enabled:hover:bg-green-900 enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out">
+                        Aprovar Ficha
+                </button>
+
+                <button 
+                    disabled={!id || !isValid} 
+                    className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-red-600 text-white font-body font-bold rounded-2xl enabled:hover:bg-red-900 enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out">
+                        Recusar Ficha
+                </button>
+
+                <button 
+                    disabled={!id || !isValid} 
+                    className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-yellow-600 text-white font-body font-bold rounded-2xl enabled:hover:bg-yellow-900 enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out">
+                        Definir Ficha em Espera
+                </button>
+            </div>
         </div>
     );
 }
 
-export default Ficha;
+export default Perfil;

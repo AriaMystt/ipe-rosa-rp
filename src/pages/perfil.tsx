@@ -58,7 +58,7 @@ function Perfil() {
         <div>
             <div className="flex flex-col items-center justify-between mx-auto pb-24">
                 {user ? (
-                    <div className="flex flex-col items-center gap-4 mt-8">
+                    <div className="flex flex-col items-center justify-center gap-4 mt-8">
                         <div className="flex flex-row items-center justify-around gap-8">
                             <img
                                 src={user.avatarUrl}
@@ -79,6 +79,14 @@ function Perfil() {
                         <div className="flex flex-col items-center justify-center w-screen min-h-screen py-8 px-4 md:px-48">
                             {ficha ? (
                                 <div className="flex flex-col items-center justify-center w-screen min-h-screen py-8 px-4 md:px-48">
+                                    <div className="flex flex-row items-center justify-center w-screen">
+                                        <div className="w-4 h-4 bg-yellow-300 rounded-full flex items-center justify-center shadow-lg shadow-black" />
+
+                                        <h1 className="text-3xl md:text-4xl font-title font-bold text-yellow-300 backdrop-blur-2xl text-shadow-lg text-shadow-black/50 m-4 py-2 px-4">
+                                            Status: Em espera
+                                        </h1>
+                                    </div>
+
                                     <div className="flex flex-col items-center justify-center text-left w-full h-full bg-stone-100 px-4 py-6 md:px-12 md:py-18 shadow-xl shadow-black bg-[url('/src/assets/images/paperTexture2.jpg')] bg-auto bg-center bg-repeat">
                                         <h1 className="text-3xl md:text-6xl w-full text-left font-title font-bold text-background md:mb-8">
                                             Ficha pessoal de {ficha.charName}

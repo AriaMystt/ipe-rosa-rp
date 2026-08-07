@@ -6,6 +6,8 @@ import Lore from './pages/lore'
 import Entrar from './pages/entrar'
 import Perfil from './pages/perfil'
 import Ficha from './pages/ficha'
+import Admin from './pages/admin/admin'
+import AdminFichas from './pages/admin/fichas'
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/entrar" element={<Entrar />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/ficha" element={<Ficha />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/fichas/:id" element={<AdminFichas />} />
         </Routes>
         <Footer />
       </div>

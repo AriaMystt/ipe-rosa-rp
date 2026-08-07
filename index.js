@@ -16,13 +16,56 @@ const __dirname = path.dirname(__filename);
 const {
   DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET,
+  DISCORD_BOT_TOKEN,
   DISCORD_REDIRECT_URI, // e.g. http://localhost:8080/auth/discord/callback
+  DISCORD_WEBHOOK_FICHAS_URL,
   JWT_SECRET,
   NODE_ENV,
 } = process.env;
 
+const ADMIN_WHITELIST = (process.env.ADMIN_DISCORD_IDS || '')
+  .split(',')
+  .map(id => id.trim())
+  .filter(Boolean);
+
 app.use(express.json());
 app.use(cookieParser());
+
+function requireAuth(req, res, next) {
+  const token = req.cookies.session;
+  if (!token) return res.status(401).json({ error: 'Not authenticated' });
+
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ error: 'Invalid session' });
+  }
+}
+
+function requireAdmin(req, res, next) {
+  requireAuth(req, res, () => {
+    if (!ADMIN_WHITELIST.includes(req.user.id)) {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+    next();
+  });
+}
+
+function getAdminStatus(req) {
+  const token = req.cookies.session;
+  if (!token) return { authenticated: false, isAdmin: false };
+
+  try {
+    const user = jwt.verify(token, JWT_SECRET);
+    return {
+      authenticated: true,
+      isAdmin: ADMIN_WHITELIST.includes(user.id),
+    };
+  } catch {
+    return { authenticated: false, isAdmin: false };
+  }
+}
 
 // --- Auth routes ---
 
@@ -116,11 +159,22 @@ app.post('/api/submit', async (req, res) => {
 
     const { charName, age, ethnicity, year, connections, lore, type, personality } = req.body;
 
+    const stmt = db.prepare('SELECT * FROM fichas WHERE userId = ?');
+    const oldFicha = stmt.get(userId)
+
     const insert = db.prepare(
       'INSERT OR REPLACE INTO fichas (userId, charName, age, ethnicity, year, connections, lore, type, personality) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
     );
 
     const result = insert.run(userId, charName, age, ethnicity, year, connections, lore, type, personality);
+
+    const response = await fetch(DISCORD_WEBHOOK_FICHAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: `${oldFicha ? `<@&1533241351829979177> [Ficha](https://ipe-rosa.discloud.app/admin/fichas/${userId}) Atualizada de <@${userId}>` : `<@&1533241351829979177> Nova [Ficha](https://ipe-rosa.discloud.app/admin/fichas/${userId}) de <@${userId}>`}`
+      })
+    });
 
     res.json({ 
       success: true,
@@ -134,6 +188,31 @@ app.post('/api/submit', async (req, res) => {
   }
 });
 
+app.get('/api/discord-user/:id', requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    // Fixed path and added missing $ sign for template literal interpolation
+    const response = await fetch(`https://discord.com/api/users/${id}`, {
+      headers: {
+        Authorization: `Bot ${DISCORD_BOT_TOKEN}`
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`Discord API error status: ${response.status}`);
+      return res.status(response.status).json({ error: 'User not found or bot lacks access' });
+    }
+
+    const data = await response.json();
+    res.json({ username: data.username, globalName: data.global_name });
+  } catch (error) {
+    console.error("Failed to query Discord API:", error);
+    res.status(500).json({ error: 'Internal API error' });
+  }
+});
+
+
 app.get('/api/ficha/:userId', (req, res) => {
   const { userId } = req.params
   const stmt = db.prepare('SELECT * FROM fichas WHERE userId = ?');
@@ -143,6 +222,27 @@ app.get('/api/ficha/:userId', (req, res) => {
   }
 
   res.json(ficha)
+});
+
+app.get('/api/fichas', requireAdmin, async (req, res) =>{
+  const stmt = db.prepare('SELECT * FROM fichas')
+  const fichas = stmt.all()
+  res.json(fichas)
+});
+
+app.get('/admin/{*splat}', (req, res, next) => {
+  const { authenticated, isAdmin } = getAdminStatus(req);
+
+  if (!authenticated) {
+    return res.redirect('/entrar');
+  }
+
+  if (!isAdmin) {
+    return res.redirect('/entrar');
+  }
+
+  // authorized — fall through to serve the SPA normally
+  next();
 });
 
 // --- Static frontend ---
