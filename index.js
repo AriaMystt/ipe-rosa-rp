@@ -17,7 +17,7 @@ const {
   DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET,
   DISCORD_BOT_TOKEN,
-  DISCORD_REDIRECT_URI, // e.g. http://localhost:8080/auth/discord/callback
+  DISCORD_REDIRECT_URI,
   DISCORD_WEBHOOK_FICHAS_URL,
   JWT_SECRET,
   NODE_ENV,
@@ -66,8 +66,6 @@ function getAdminStatus(req) {
     return { authenticated: false, isAdmin: false };
   }
 }
-
-// --- Auth routes ---
 
 app.get('/auth/discord', (req, res) => {
   const params = new URLSearchParams({
@@ -192,7 +190,6 @@ app.get('/api/discord-user/:id', requireAdmin, async (req, res) => {
   const { id } = req.params;
   
   try {
-    // Fixed path and added missing $ sign for template literal interpolation
     const response = await fetch(`https://discord.com/api/users/${id}`, {
       headers: {
         Authorization: `Bot ${DISCORD_BOT_TOKEN}`
@@ -230,6 +227,37 @@ app.get('/api/fichas', requireAdmin, async (req, res) =>{
   res.json(fichas)
 });
 
+const VALID_STATUSES = ['pending', 'approved', 'declined'];
+
+app.patch('/api/fichas/:userId/status', requireAdmin, async (req, res) => {
+  const { userId } = req.params;
+  const { status } = req.body;
+
+  if (!VALID_STATUSES.includes(status)) {
+    return res.status(400).json({ error: `status deve ser um de: ${VALID_STATUSES.join(', ')}` });
+  }
+
+  const existing = db.prepare('SELECT * FROM fichas WHERE userId = ?').get(userId);
+  if (!existing) {
+    return res.status(404).json({ error: 'Ficha não encontrada' });
+  }
+
+  db.prepare('UPDATE fichas SET status = ? WHERE userId = ?').run(status, userId);
+
+  if (DISCORD_WEBHOOK_FICHAS_URL) {
+    const labels = { approved: 'aprovada', declined: 'recusada', pending: 'definida em espera' };
+    fetch(DISCORD_WEBHOOK_FICHAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: `<@&1533241351829979177> Ficha de <@${userId}> foi ${labels[status]} por <@${req.user.id}>`,
+      }),
+    }).catch((err) => console.error('Erro ao notificar webhook:', err));
+  }
+
+  res.json({ success: true, userId, status });
+});
+
 app.get('/admin/{*splat}', (req, res, next) => {
   const { authenticated, isAdmin } = getAdminStatus(req);
 
@@ -241,11 +269,9 @@ app.get('/admin/{*splat}', (req, res, next) => {
     return res.redirect('/entrar');
   }
 
-  // authorized — fall through to serve the SPA normally
   next();
 });
 
-// --- Static frontend ---
 app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('/{*splat}', (req, res) => {

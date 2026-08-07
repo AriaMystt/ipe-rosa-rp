@@ -3,6 +3,20 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
+interface Ficha {
+    id: number
+    userId: string;
+    charName: string;
+    ethnicity: string;
+    connections: string;
+    age: string;
+    year: string;
+    lore: string;
+    type: string;
+    personality: string;
+    status: 'pending' | 'approved' | 'declined';
+}
+
 type RouteParams = {
   id: string;
 };
@@ -16,13 +30,13 @@ function Perfil() {
     const navigate = useNavigate();
     const { id } = useParams<RouteParams>();
 
-    const [ficha, setFicha] = useState<any | null>(null);
+    const [ficha, setFicha] = useState<Ficha | null>(null);
     const [fetchingFicha, setFetchingFicha] = useState<boolean>(true);
     const [discordUser, setDiscordUser] = useState<DiscordUser | null>(null);
 
     const { register, handleSubmit, formState: { isValid } } = useForm({
         mode: 'onChange',
-        values: ficha,
+        values: ficha || undefined,
         defaultValues: {
             year: "1"
         }
@@ -91,6 +105,40 @@ function Perfil() {
             console.error('Network error:', error);
         }
     };
+
+    const approveFicha = async (targetId: any, type: string) => {
+        if (!targetId) return;
+        try {
+            const response = await fetch(`/api/fichas/${targetId}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ status: `${type == 'approve' ? 'approved' : type == 'decline' ? 'declined' : 'pending'}` }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Success:', result);
+                navigate('/admin', { replace: true });
+            } else {
+                console.error('Server error:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+        }
+    }
+
+    const colorsCircle = {
+        pending:  "bg-yellow-300", 
+        approved: "bg-green-300", 
+        declined: "bg-red-300", 
+    }
+
+    const colorText = {
+        pending:  "text-yellow-300", 
+        approved: "text-green-300", 
+        declined: "text-red-300", 
+    }
 
     if (fetchingFicha) {
         return <div className="text-center mt-12 text-primary font-bold">Carregando...</div>;
@@ -182,27 +230,30 @@ function Perfil() {
             <hr className="my-12 h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10" />
             
             <div className="flex flex-row items-center justify-center w-screen">
-                <div className="w-2 h-2 bg-yellow-300 rounded-full flex items-center justify-center shadow-lg shadow-black" />
+                <div className={`w-2 h-2 ${colorsCircle[ficha?.status ?? 'pending']} rounded-full flex items-center justify-center shadow-lg shadow-black`} />
 
-                <h1 className="text-3xl md:text-2xl font-title font-bold text-yellow-300 backdrop-blur-2xl text-shadow-lg text-shadow-black/50 m-4">
-                    Status: Em espera
+                <h1 className={`text-xl md:text-2xl font-title font-bold ${colorText[ficha?.status ?? 'pending']} backdrop-blur-2xl text-shadow-lg text-shadow-black/50 m-4`}>
+                    Status: {ficha?.status == 'pending' ? 'Em espera' : ficha?.status == 'approved' ? 'Aprovado' : 'Recusado'}
                 </h1>
             </div>
 
             <div className="flex flex-row items-center justify-center w-full gap-8">
-                <button 
+                <button
+                    onClick={()=>approveFicha(id, 'approve')}
                     disabled={!id || !isValid} 
                     className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-green-600 text-white font-body font-bold rounded-2xl enabled:hover:bg-green-900 enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out">
                         Aprovar Ficha
                 </button>
 
                 <button 
+                    onClick={()=>approveFicha(id, 'decline')}
                     disabled={!id || !isValid} 
                     className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-red-600 text-white font-body font-bold rounded-2xl enabled:hover:bg-red-900 enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out">
                         Recusar Ficha
                 </button>
 
                 <button 
+                    onClick={()=>approveFicha(id, 'pending')}
                     disabled={!id || !isValid} 
                     className="disabled:bg-gray-400 disabled:text-black text-center px-16 py-3 bg-yellow-600 text-white font-body font-bold rounded-2xl enabled:hover:bg-yellow-900 enabled:hover:shadow-xl enabled:hover:scale-102 transition-all duration-300 ease-out">
                         Definir Ficha em Espera

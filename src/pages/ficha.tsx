@@ -10,7 +10,6 @@ function Ficha() {
     const [ficha, setFicha] = useState<any>(null);
     const [fetchingFicha, setFetchingFicha] = useState<boolean>(true);
 
-    // Pass `ficha` to `values` to auto-prefill fields when data arrives
     const { register, handleSubmit, formState: { isValid } } = useForm({
         mode: 'onChange',
         values: ficha,
@@ -20,7 +19,6 @@ function Ficha() {
     });
 
     useEffect(() => {
-        // Redirect if not logged in
         if (!loading && !user) {
             navigate('/entrar', { replace: true });
             return;

@@ -2,13 +2,13 @@ import { useAuth } from '../../hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Explicit interfaces to avoid 'any' traps
 interface Ficha {
     id: number
     userId: string;
     charName: string;
     age: string;
     year: string;
+    status: 'pending' | 'approved' | 'declined';
 }
 
 interface DiscordUser {
@@ -80,6 +80,18 @@ function Entrar() {
         return discordUsers[userId] ?? null;
     };
 
+    const colorsCircle = {
+        pending:  "bg-yellow-300", 
+        approved: "bg-green-300", 
+        declined: "bg-red-300", 
+    }
+
+    const colorText = {
+        pending:  "text-yellow-300", 
+        approved: "text-green-300", 
+        declined: "text-red-300", 
+    }
+
     if (loading || fetchingFichas) {
         return <div className="text-center mt-12 text-primary font-bold">Carregando...</div>;
     }
@@ -89,7 +101,6 @@ function Entrar() {
             <div className="flex flex-row flex-wrap justify-center items-center gap-6 mx-auto my-24 bg-background px-4">
                 {fichas && fichas.length > 0 ? (
                     fichas.map((ficha: Ficha) => (
-                        // Added key attribute and conditional optional chaining check
                         <button onClick={() => goToFicha(ficha.userId)} key={ficha.id} className="flex flex-col items-center justify-between bg-black/50 backdrop-blur-xl rounded-xl shadow-xl shadow-black/40 p-12 my-2 hover:bg-black/70 hover:scale-105 hover:shadow-2xl transition-all duration-300 max-w-sm">
                             <h1 className="text-primary font-bold font-title text-lg">
                                 {getDiscordUser(ficha.userId)?.globalName || "..."} (@{getDiscordUser(ficha.userId)?.username || "..."})
@@ -98,10 +109,10 @@ function Entrar() {
                                 {ficha.charName}, {ficha.age} anos, {ficha.year}º ano.
                             </p>
                             <div className="flex flex-row items-center justify-center w-full">
-                                <div className="w-2 h-2 bg-yellow-300 rounded-full flex items-center justify-center shadow-lg shadow-black" />
+                                <div className={`w-2 h-2 ${colorsCircle[ficha.status]} rounded-full flex items-center justify-center shadow-lg shadow-black`} />
 
-                                <h1 className="text-md font-title font-bold text-yellow-300 text-shadow-lg text-shadow-black/50 m-2">
-                                    Status: Em espera
+                                <h1 className={`text-md font-title font-bold ${colorText[ficha.status]} text-shadow-lg text-shadow-black/50 m-2`}>
+                                    Status: {ficha.status == 'pending' ? 'Em espera' : ficha.status == 'approved' ? 'Aprovado' : 'Recusado'}
                                 </h1>
                             </div>
                         </button>
