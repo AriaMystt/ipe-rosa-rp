@@ -159,6 +159,11 @@ function Ficha() {
                 </div>
             </form>
 
+            <p className="text-lg md:text-2xl font-body font-bold text-secondary text-center">
+                Nota: Enviar a ficha não significa ser aprovado(a).<br/>
+                Ao enviar a ficha, os moderadores vão analisa-la, a equipe tem a liberdade de aceitar, recusar, definir em espera ou editar (corrigir) sua ficha se for necessário, nosso bot do discord te notificará em qualquer atualização sobre sua ficha.
+            </p>
+
             <button 
                 type="submit" 
                 form="ficha" 
