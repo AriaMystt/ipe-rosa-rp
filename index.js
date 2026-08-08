@@ -229,6 +229,36 @@ app.get('/api/fichas', requireAdmin, async (req, res) =>{
 
 const VALID_STATUSES = ['pending', 'approved', 'declined'];
 
+async function sendDiscordDM(userId, content) {
+  const channelRes = await fetch('https://discord.com/api/v10/users/@me/channels', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bot ${DISCORD_BOT_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ recipient_id: userId }),
+  });
+
+  if (!channelRes.ok) {
+    throw new Error(`Falha ao abrir DM (status ${channelRes.status}): ${await channelRes.text()}`);
+  }
+
+  const channel = await channelRes.json();
+
+  const msgRes = await fetch(`https://discord.com/api/v10/channels/${channel.id}/messages`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bot ${DISCORD_BOT_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ content }),
+  });
+
+  if (!msgRes.ok) {
+    throw new Error(`Falha ao enviar DM (status ${msgRes.status}): ${await msgRes.text()}`);
+  }
+}
+
 app.patch('/api/fichas/:userId/status', requireAdmin, async (req, res) => {
   const { userId } = req.params;
   const { status } = req.body;
@@ -244,8 +274,9 @@ app.patch('/api/fichas/:userId/status', requireAdmin, async (req, res) => {
 
   db.prepare('UPDATE fichas SET status = ? WHERE userId = ?').run(status, userId);
 
+  const labels = { approved: 'aprovada', declined: 'recusada', pending: 'definida em espera' };
+
   if (DISCORD_WEBHOOK_FICHAS_URL) {
-    const labels = { approved: 'aprovada', declined: 'recusada', pending: 'definida em espera' };
     fetch(DISCORD_WEBHOOK_FICHAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -255,7 +286,22 @@ app.patch('/api/fichas/:userId/status', requireAdmin, async (req, res) => {
     }).catch((err) => console.error('Erro ao notificar webhook:', err));
   }
 
-  res.json({ success: true, userId, status });
+  // DM the user directly
+  let dmSent = true;
+  const dmMessages = {
+    approved: `Sua ficha de **${existing.charName}** foi aprovada! Bem-vindo(a) à whitelist!`,
+    declined: `Sua ficha de **${existing.charName}** foi recusada. Entre em contato com a staff se quiser saber o motivo.`,
+    pending: `Sua ficha de **${existing.charName}** foi marcada como pendente novamente.`,
+  };
+
+  try {
+    await sendDiscordDM(userId, dmMessages[status]);
+  } catch (err) {
+    dmSent = false;
+    console.error(`Erro ao enviar DM para ${userId}:`, err.message);
+  }
+
+  res.json({ success: true, userId, status, dmSent });
 });
 
 app.get('/admin/{*splat}', (req, res, next) => {
