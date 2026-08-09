@@ -19,6 +19,8 @@ const {
   DISCORD_BOT_TOKEN,
   DISCORD_REDIRECT_URI,
   DISCORD_WEBHOOK_FICHAS_URL,
+  DISCORD_GUILD_ID,
+  DISCORD_WHITELIST_ROLE_ID,
   JWT_SECRET,
   NODE_ENV,
 } = process.env;
@@ -259,6 +261,23 @@ async function sendDiscordDM(userId, content) {
   }
 }
 
+async function setDiscordRole(userId, shouldHaveRole) {
+  if (!DISCORD_GUILD_ID || !DISCORD_WHITELIST_ROLE_ID) {
+    throw new Error('DISCORD_GUILD_ID ou DISCORD_WHITELIST_ROLE_ID não configurados');
+  }
+
+  const url = `https://discord.com/api/v10/guilds/${DISCORD_GUILD_ID}/members/${userId}/roles/${DISCORD_WHITELIST_ROLE_ID}`;
+
+  const res = await fetch(url, {
+    method: shouldHaveRole ? 'PUT' : 'DELETE',
+    headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` },
+  });
+
+  if (!res.ok && res.status !== 204) {
+    throw new Error(`Falha ao atualizar cargo (status ${res.status}): ${await res.text()}`);
+  }
+}
+
 app.patch('/api/fichas/:userId/status', requireAdmin, async (req, res) => {
   const { userId } = req.params;
   const { status } = req.body;
@@ -286,7 +305,6 @@ app.patch('/api/fichas/:userId/status', requireAdmin, async (req, res) => {
     }).catch((err) => console.error('Erro ao notificar webhook:', err));
   }
 
-  // DM the user directly
   let dmSent = true;
   const dmMessages = {
     approved: `Sua ficha de **${existing.charName}** foi aprovada! Bem-vindo(a) à whitelist!`,
@@ -301,7 +319,15 @@ app.patch('/api/fichas/:userId/status', requireAdmin, async (req, res) => {
     console.error(`Erro ao enviar DM para ${userId}:`, err.message);
   }
 
-  res.json({ success: true, userId, status, dmSent });
+  let roleUpdated = true;
+  try {
+    await setDiscordRole(userId, status === 'approved');
+  } catch (err) {
+    roleUpdated = false;
+    console.error(`Erro ao atualizar cargo de ${userId}:`, err.message);
+  }
+
+  res.json({ success: true, userId, status, dmSent, roleUpdated });
 });
 
 app.get('/admin/{*splat}', (req, res, next) => {
