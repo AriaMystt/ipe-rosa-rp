@@ -170,7 +170,7 @@ function Perfil() {
 
                 <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-6 md:py-8 bg-black/50 backdrop-blur-xl rounded-xl shadow-lg shadow-black/60 my-4">
                     <h1 className='text-2xl font-title text-primary font-bold'>
-                        Etinia
+                        Etnia
                     </h1>
                     <textarea {...register("ethnicity", {required: true})} id="ethnicity" rows={1} placeholder="Japones" className='bg-white rounded-2xl font-body text-center font-medium my-4 p-2 w-full' />
                 </div>

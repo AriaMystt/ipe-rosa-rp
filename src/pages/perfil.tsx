@@ -120,7 +120,7 @@ function Perfil() {
                                             Idade: {ficha.age}
                                         </p>
                                         <p className="text-md md:text-lg font-body w-full text-left text-black mb-4 md:mb-8">
-                                            Etinia: {ficha.ethnicity}
+                                            Etnia: {ficha.ethnicity}
                                         </p>
                                         <p className="text-md md:text-lg font-body w-full text-left text-black mb-4 md:mb-8">
                                             Ano escolar: {ficha.year}
