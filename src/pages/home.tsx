@@ -1,7 +1,7 @@
 function Home() {
   return (
     <div>
-      <div className="flex flex-col items-center justify-between mx-auto pb-24 bg-[url('/src/assets/images/hero.png')] bg-cover bg-center min-w-screen min-h-screen bg-no-repeat">
+      <div className="flex flex-col items-center justify-between mx-auto pb-24 bg-[url('/src/assets/images/hero.webp')] bg-cover bg-center min-w-screen min-h-screen bg-no-repeat">
         <div className="flex flex-col items-center justify-center h-full text-primary text-center font-title font-bold mt-32 text-shadow-md text-shadow-black/40">
           <h1 className="text-4xl md:text-8xl">
             Bem-vindo ao Ipê Rosa
