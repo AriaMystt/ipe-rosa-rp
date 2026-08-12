@@ -168,7 +168,7 @@ app.post('/api/submit', async (req, res) => {
 
     const result = insert.run(userId, charName, age, ethnicity, year, connections, lore, type, personality);
 
-    const response = await fetch(DISCORD_WEBHOOK_FICHAS_URL, {
+    await fetch(DISCORD_WEBHOOK_FICHAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -211,7 +211,6 @@ app.get('/api/discord-user/:id', requireAdmin, async (req, res) => {
   }
 });
 
-
 app.get('/api/ficha/:userId', (req, res) => {
   const { userId } = req.params
   const stmt = db.prepare('SELECT * FROM fichas WHERE userId = ?');
@@ -230,6 +229,17 @@ app.get('/api/fichas', requireAdmin, async (req, res) =>{
 });
 
 const VALID_STATUSES = ['pending', 'approved', 'declined'];
+
+app.get('/api/fichas/approved', async (req, res) => {
+  const stmt = db.prepare("SELECT * FROM fichas WHERE status = 'approved'")
+  const fichas = stmt.all()
+  const approvedIds = []
+  for (let i = 0; i < fichas.length; i++) {
+    approvedIds.push(fichas[i].userId)
+  }
+  return res.json(approvedIds)
+});
+
 
 async function sendDiscordDM(userId, content) {
   const channelRes = await fetch('https://discord.com/api/v10/users/@me/channels', {
